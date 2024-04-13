@@ -27,7 +27,7 @@ export class RabbitMQ {
       return RabbitMQ.instance;
     }
 
-    return this.constructor("http://localhost:15672/api");
+    return this.constructor("http://localhost:15672/api"); // TODO: For now
   }
 
 
