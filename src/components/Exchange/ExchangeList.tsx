@@ -13,7 +13,7 @@ export const ExchangeList = () => {
     page,
     pageSize,
     vhost: "/"
-  });
+  }); // FIXME, 1
 
   return <List>
     {!isLoading && exchanges &&
