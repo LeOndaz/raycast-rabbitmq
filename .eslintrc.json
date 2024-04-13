@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "extends": ["@leondaz", "@raycast"],
+  "ignorePatterns": ["scripts/generateTypes.js"],
+  "globals": {
+    "node": true
+  },
+  "rules": {
+    "@typescript-eslint/no-unsafe-argument": "off", // bugs in ray cli ? alerts even if no error
+    "@antimatter-labs/no-anonymous-use-effect-callback-rule/base": ["error"]
+  },
+  "plugins": [
+    "@antimatter-labs/eslint-plugin-no-anonymous-use-effect-callback-rule"
+  ]
+}

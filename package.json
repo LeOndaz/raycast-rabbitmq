@@ -1,0 +1,47 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "rabbitmq",
+  "title": "RabbitMQ",
+  "description": "",
+  "icon": "command-icon.png",
+  "author": "leondaz",
+  "categories": [
+    "Developer Tools"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "exchange-list",
+      "title": "List Exchanges",
+      "description": "List all available exchanges on a host",
+      "mode": "view"
+    }
+  ],
+  "dependencies": {
+    "@leondaz/eslint-config": "^1.0.12",
+    "@raycast/api": "^1.70.3",
+    "amqplib": "^0.10.3",
+    "axios": "^1.6.8",
+    "camelcase": "^8.0.0",
+    "rhea-promise": "^3.0.1"
+  },
+  "devDependencies": {
+    "@antimatter-labs/eslint-plugin-no-anonymous-use-effect-callback-rule": "^1.0.2",
+    "@raycast/eslint-config": "^1.0.6",
+    "@types/amqplib": "^0.10.5",
+    "@types/axios": "^0.14.0",
+    "@types/node": "20.8.10",
+    "@types/react": "18.2.27",
+    "eslint": "^8.51.0",
+    "prettier": "^3.0.3",
+    "react-devtools": "^4.28.4",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
