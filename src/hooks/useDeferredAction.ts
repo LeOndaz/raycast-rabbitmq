@@ -11,11 +11,16 @@ export const useDeferredAction = <T>(
 
   const callback = useCallback(async (...args: unknown[]) => {
     setIsLoading(true);
-
+  
+    console.log("HERE1");
+    
     try {
       const data = await f(...args);
+      console.log("HER####E");
+      console.log(data)
       setData(data);
     } catch (e: unknown) {
+      console.error(e);
       setError(e);
     } finally {
       setIsLoading(false);

@@ -2,6 +2,7 @@ import { Action, ActionPanel, List } from "@raycast/api";
 import { ExchangeDetail } from "./ExchangeDetail";
 import { useExchanges } from "../../hooks/useExchanges";
 import { usePagination } from "../../hooks/usePagination";
+import { useEffect } from "react";
 
 export const ExchangeList = () => {
   const {

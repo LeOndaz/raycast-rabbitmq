@@ -9,7 +9,7 @@ export const useDeferredState = <T>(f: (...args: unknown[]) => Promise<T>, deps:
   const [cb, data, isLoading, error] = useDeferredAction<T>(f, deps, initialState);
 
   useEffect(function callCb() {
-    cb();
+    cb().then();
   }, [cb]);
 
   return useMemo(() => [

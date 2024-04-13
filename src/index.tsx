@@ -2,7 +2,7 @@ import { ActionPanel, Detail, List, Action,  } from "@raycast/api";
 
 export default function Command() {
   return (
-    <List>
+    <List >
       <List.Item
         icon="list-icon.png"
         title="Greeting"

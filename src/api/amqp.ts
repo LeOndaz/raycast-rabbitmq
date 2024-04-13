@@ -1,3 +1,4 @@
+// TODO this file compiles incorrectly
 import axios, { AxiosInstance } from "axios";
 import { BindingResponse, ExchangeResponse, ListBindingsOpts, PaginationOpts } from "../typing/rabbitMQ";
 import { camelizeObj } from "../utils/camelizeObj";
@@ -22,12 +23,12 @@ export class RabbitMQ {
     this.apiUrl = apiUrl;
   }
 
-  public static getInstance() {
+  static getInstance() {
     if (RabbitMQ.instance) {
       return RabbitMQ.instance;
     }
 
-    return this.constructor("http://localhost:15672/api"); // TODO: For now
+    return this.constructor("http://localhost:15672/api"); // hardcoded for now
   }
 
 
