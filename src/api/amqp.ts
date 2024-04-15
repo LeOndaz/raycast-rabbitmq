@@ -15,47 +15,45 @@ interface SendJsonMessageOpts extends Omit<SendMessageOpts, "data"> {
 
 export class RabbitMQ {
   protected static instance?: RabbitMQ;
-
-  protected httpClient?: AxiosInstance;
-  protected apiUrl: string;
+  protected httpClient: AxiosInstance;
+  private _isReady = false;
 
   constructor(apiUrl: string) {
-    this.apiUrl = apiUrl;
+    this.httpClient = this.initHTTPClient(apiUrl)
+    this.init();
   }
 
-  static getInstance() {
-    if (RabbitMQ.instance) {
-      return RabbitMQ.instance;
+  get isReady() {
+    return this._isReady;
+  }
+
+  static getInstance(apiUrl: string): RabbitMQ {
+    if (!RabbitMQ.instance) {
+      RabbitMQ.instance = new RabbitMQ(apiUrl);
     }
 
-    return this.constructor("http://localhost:15672/api"); // hardcoded for now
+    return RabbitMQ.instance;
   }
 
 
-  public async init() {
-    try {
-      console.log("initializing HTTP client");
-      await this.initHTTPClient(this.apiUrl).catch(console.error);
-    } catch (e) {
-      console.error(e);
-      throw new Error(`failed to init axios: ${e}`);
-    }
-
+  public init() {
     try {
       console.log("installing rabbitmq_management plugin");
-      await this.enablePlugin("rabbitmq_management").catch(console.error);
+      this.enablePlugin("rabbitmq_management");
     } catch (e) {
       console.error(e);
       throw new Error(`failed to enable plugin rabbitmq_management: ${e}`);
     }
+
+    this._isReady = true;
   }
 
   async listQueues() {
-    return this.httpClient!.get("/queues");
+    return this.httpClient.get("/queues");
   }
 
   async getQueueByName(name: string) {
-    return this.httpClient!.get(`/queues/detailed`, {
+    return this.httpClient.get(`/queues/detailed`, {
       params: {
         name
       }
@@ -69,7 +67,7 @@ export class RabbitMQ {
   }): Promise<ExchangeResponse> {
     const urlEncodedVhost = encodeURIComponent(pageOpts.vhost);
 
-    return this.httpClient!.get(`/exchanges/${urlEncodedVhost}/`, {
+    return this.httpClient.get(`/exchanges/${urlEncodedVhost}/`, {
       params: {
         "page_size": pageOpts.pageSize, // quotes to get around camelCase validation
         "use_regex": pageOpts.useRegex,
@@ -95,16 +93,17 @@ export class RabbitMQ {
     }
 
     exchange = encodeURIComponent(exchange);
-    return this.httpClient!.get(`exchanges/${vhost}/${exchange}/bindings/${endpoint}`).then(r => r.data);
+    return this.httpClient.get(`exchanges/${vhost}/${exchange}/bindings/${endpoint}`).then(r => r.data);
   }
 
   async getExchange(name: string, vhost: string) {
     const urlEncodedVhost = encodeURIComponent(vhost);
-    return this.httpClient!.get(`/exchanges/${urlEncodedVhost}/${name}`).then(r => r.data);
+    return this.httpClient.get(`/exchanges/${urlEncodedVhost}/${name}`).then(r => r.data);
   }
 
   async send(sendOpts: SendMessageOpts) {
-    return this.apiUrl || sendOpts;
+    sendOpts;
+    return this;
   }
 
   async json(sendOpts: SendJsonMessageOpts) {
@@ -114,17 +113,19 @@ export class RabbitMQ {
     });
   }
 
-  protected async enablePlugin(name: string) {
+  protected enablePlugin(name: string) {
     name;
     return this;
   }
 
-  protected async initHTTPClient(apiUrl: string) {
-    this.httpClient = axios.create({
+  protected initHTTPClient(apiUrl: string): AxiosInstance {
+    this;
+
+    const client = axios.create({
       baseURL: apiUrl
     });
 
-    this.httpClient.interceptors.request.use((config) => {
+    client.interceptors.request.use((config) => {
       console.log(`${config.method?.toUpperCase()} ${config.url}`);
 
       config.auth = {
@@ -135,12 +136,14 @@ export class RabbitMQ {
       return config;
     });
 
-    this.httpClient.interceptors.response.use((response) => {
+    client.interceptors.response.use((response) => {
       if (typeof response.data === "object") {
         response.data = camelizeObj(response.data);
       }
 
       return response;
     });
+    
+    return client;
   }
 }
